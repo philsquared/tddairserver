@@ -21,7 +21,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-          APP_PORT: ${APP_PORT}
+          FLASK_RUN_PORT: ${FLASK_RUN_PORT}
     volumes:
       - "./:/app"
       - db-data:
