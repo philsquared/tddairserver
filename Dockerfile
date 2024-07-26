@@ -11,7 +11,7 @@ WORKDIR $APP
 
 # Copy the requirements file in order to install
 # Python dependencies
-COPY app/requirements.txt .
+COPY requirements.txt .
 
 # Install Python dependencies
 RUN pip install -r requirements.txt
