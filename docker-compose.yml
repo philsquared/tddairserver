@@ -1,0 +1,45 @@
+# Ensure the following are defined in a .env file:
+#   FLASK_RUN_PORT
+#   DOMAIN
+#   SERVICE_NAME
+#   DB_NAME
+#   DB_URL
+#   DB_PASSWORD
+version: '3'
+services:
+  db:
+    image: "postgres:16"
+    networks:
+      - db_nw
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+  tddair:
+    image: webapp-tddair
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+          APP_PORT: ${APP_PORT}
+    volumes:
+      - "./:/app"
+      - db-data:
+    networks:
+      - traefik_nw
+    environment:
+      - DB_NAME=${DB_NAME}
+      - DB_URL=${DB_URL}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - FLASK_RUN_PORT=${FLASK_RUN_PORT}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.${SERVICE_NAME}-flask.loadbalancer.server.port=${FLASK_RUN_PORT}"
+      - "traefik.http.routers.${SERVICE_NAME}-flask.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.${SERVICE_NAME}-flask.entrypoints=websecure"
+      - "traefik.http.routers.${SERVICE_NAME}-flask.tls.certresolver=myresolver"
+      - "traefik.docker.network=shared_traefik_nw"
+networks:
+  traefik_nw:
+    name: shared_traefik_nw
+    external: true
