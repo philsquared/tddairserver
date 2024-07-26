@@ -45,4 +45,4 @@ networks:
     name: shared_traefik_nw
     external: true
 volumes:
-  - db-data:
+  db-data:
