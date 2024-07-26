@@ -24,7 +24,6 @@ services:
           FLASK_RUN_PORT: ${FLASK_RUN_PORT}
     volumes:
       - "./:/app"
-      - db-data:
     networks:
       - traefik_nw
     environment:
@@ -43,3 +42,5 @@ networks:
   traefik_nw:
     name: shared_traefik_nw
     external: true
+volumes:
+  - db-data:
