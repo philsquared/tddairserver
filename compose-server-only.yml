@@ -5,16 +5,6 @@
 #   DB_PASSWORD
 version: '3'
 services:
-  db:
-    image: "postgres:16"
-    networks:
-      - db_nw
-    environment:
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-    volumes:
-      - db-data:/var/lib/postgresql/data
-    ports:
-      - "${PUBLIC_DB_PORT}:5432"
   tddair:
     image: webapp-tddair
     build:
@@ -35,5 +25,5 @@ services:
       - FLASK_RUN_PORT=${FLASK_RUN_PORT}
 networks:
   db_nw:
-volumes:
-  db-data:
+    name: shared_tddair_db_nw
+    external: true

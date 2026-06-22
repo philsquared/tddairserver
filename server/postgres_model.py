@@ -96,9 +96,12 @@ class ModelIOBase:
         self.cursor.execute("SELECT " + select_statement, args)
         return self.cursor.fetchone()[0]
 
-    def select_all(self, select_statement: str, args):
-        self.cursor.execute("SELECT " + select_statement, args)
-        return self.cursor.fetch()
+    def select_all(self, select_statement: str, args=None):
+        if args:
+            self.cursor.execute("SELECT " + select_statement, args)
+        else:
+            self.cursor.execute("SELECT " + select_statement)
+        return self.cursor.fetchall()
 
 
 class PostgresModelIO(ModelIOBase):
@@ -119,6 +122,32 @@ class PostgresModelIO(ModelIOBase):
                 "email": member[2],
                 "data": member[3]
             }
+
+    def list_members(self) -> [str]:
+        members = self.select_all("username from member")
+        if members is None:
+            return []
+        else:
+            return [member[0] for member in members]
+
     def create_member(self, username: str, name: str, password: str, email: str, data: str):
         self.insert_into("member (username, name, password, email, data) values (%s, %s, %s, %s, %s)",
                          (username, name, password, email, Json(data)))
+
+    def create_flight(self, origin: str, destination: str, mileage: int, airline: str, number: str):
+        self.insert_into("flight (origin, destination, mileage, airline, number) values (%s, %s, %s, %s, %s)",
+                         (origin, destination, mileage, airline, number))
+
+    def get_flight(self, airline: str, number: str) -> dict | None:
+        flight = self.select_one("origin, destination, mileage from flight where airline=%s and number=%s",
+                                 (airline, number))
+        if flight is None:
+            return None
+        else:
+            return {
+                "origin": flight[0],
+                "destination": flight[1],
+                "mileage": flight[2],
+                "airline": airline,
+                "number": number
+            }

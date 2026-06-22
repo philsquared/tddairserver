@@ -16,9 +16,11 @@ CREATE TABLE member (
 DROP TABLE IF EXISTS flight;
 CREATE TABLE flight (
     id SERIAL PRIMARY KEY,
-    from_city TEXT NOT NULL,
-    to_city TEXT NOT NULL,
-    distance_in_miles INTEGER
+    origin TEXT NOT NULL,
+    destination TEXT NOT NULL,
+    mileage INTEGER,
+    airline TEXT NOT NULL,
+    number INTEGER NOT NULL
 );
 
 DROP TABLE IF EXISTS flights_taken;

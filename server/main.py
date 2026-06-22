@@ -43,15 +43,29 @@ class TddAirServer(object):
                 case "/admin/create_db":
                     return self.admin_handler.create_db(
                         delete_if_exists=args.get("delete-if-exists"))
-                case "/get_member":
+                case "/get-member":
                     return self.model_handler.get_member(args["username"])
-                case "/create_member":
+                case "/list-members":
+                    return self.model_handler.list_members()
+                case "/create-member":
                     return self.model_handler.create_member(
                         username=args["username"],
                         name=args["name"],
                         password=args["password"],
                         email=args["email"],
                         data=args.get("data") or {})
+                case "/create-flight":
+                    return self.model_handler.create_flight(
+                        origin=args["origin"],
+                        destination=args["destination"],
+                        mileage=args["mileage"],
+                        airline=args["airline"],
+                        number=args["number"])
+                case "/get-flight":
+                    return self.model_handler.get_flight(
+                        airline=args["airline"],
+                        number=args["number"])
+
 
             return ResponseData(
                 status="error",
